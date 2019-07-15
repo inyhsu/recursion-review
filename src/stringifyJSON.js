@@ -17,21 +17,101 @@ var stringifyJSON = function(obj) {
     //if in array -> return null
     
     
-  if(typeof obj === 'boolean' || typeof obj === 'number'){
-    if(obj === Infinity || obj === NaN || obj === null){
-      return null
+  if(typeof obj === 'boolean' || typeof obj === 'number' || typeof obj === 'undefined' || obj === null){
+    if(obj === Infinity || Number.isNaN(obj)){
+      return 'null';
     }
-    
-    return '' + obj 
+    return '' + obj;
   }
   
   if(typeof obj === 'string'){
-    return '"' + obj + '"'
+    return '"' + obj + '"';
   }
   
-  if(typeof obj === 'undefined'){
-    return undefined
+  // if(typeof obj === 'undefined'){
+  //   return 'undefined';
+  // }
+  
+  // if(obj === null){
+  //   return 'null';
+  // }
+  
+  /*
+    Array
+  */
+  if(Array.isArray(obj)) {
+    let results = '[';
+    
+    for(let i = 0; i < obj.length; i++){
+      if(typeof obj[i] === 'function') {
+        results += 'null' + ',';
+      } else {
+        results += stringifyJSON(obj[i]) + ',';
+      }
+    }
+    
+    if(obj.length > 0){
+      results = results.slice(0, results.length-1);
+    }
+    
+    
+    return results + ']';
+  }
+  
+  /*
+    Object
+  */
+  
+  if(typeof obj === 'object'){
+    let results = '{';
+    
+    for (let [key, value] of Object.entries(obj)) { 
+      
+      if(typeof value === 'function' || typeof value === 'undefined'){
+        continue;
+      }else {
+        results += `"${key}":` + stringifyJSON(value) + ','; 
+      }
+      
+    }
+    if(results.length > 1){
+      results = results.slice(0, results.length-1);
+    }
+    return results + '}';
   }
   
   
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
