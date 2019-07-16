@@ -15,19 +15,30 @@ var getElementsByClassName = function(className) {
   */
   
   let results = [];
-  let bodyChildren = document.body.childNodes;
+  let body = document.body;
   
-  function moving(className, bodyChildren){
-    for(let i = 0; i < bodyChildren.length ; i++){
-      if(bodyChildren[i].className === className && bodyChildren[i] !== undefined){
-        results.push(bodyChildren[i]);
-      } else {
-        return results.concat(moving(className, bodyChildren[i]));
+  
+  function moving(body){
+    
+    if(body.classList !== undefined && body.classList.contains(className)){
+      results.push(body);
+    } 
+    
+    if(body.childNodes !== undefined){
+      for(let i = 0; i < body.childNodes.length ; i++){
+        results.concat(moving(body.childNodes[i]))
       }
     }
   }
-  
-  moving(className, bodyChildren);
+  moving(body);
   
   return results;
 };
+
+//className = foo
+//<body>
+//  <div class="foo">
+//    <div class="foo"></div>
+//  </div>
+//  <div class="nothing"></div>
+//</body>
